@@ -1,54 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Sign Up - FitClub</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="section__container">
-    <h1 class="section__header">Create Account</h1>
-
-    <form id="signupForm" style="max-width:420px;margin:auto;">
-      <label>Full Name</label>
-      <input type="text" id="name" required />
-
-      <label>Email</label>
-      <input type="email" id="email" required />
-
-      <label>Password</label>
-      <input type="password" id="password" required />
-
-      <button class="btn" type="submit" style="width:100%;">Sign Up</button>
-    </form>
-
-    <p style="text-align:center;margin-top:20px;color:#6b7d92;">
-      Already have an account? <a href="login.html">Login</a>
-    </p>
-  </div>
-
-  <script type="module">
-    import { auth, createUserWithEmailAndPassword, updateProfile } from './firebase-config.js';
-
-    const form = document.getElementById('signupForm');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        // set displayName
-        await updateProfile(userCred.user, { displayName: name });
-        alert('Account created. Please login.');
-        window.location.href = 'login.html';
-      } catch (err) {
-        console.error(err);
-        alert(err.message || 'Error creating account');
-      }
-    });
-  </script>
-</body>
-</html>
+[001] <!DOCTYPE html>
+[002] <html lang="en">
+[003] <head>
+[004]   <meta charset="UTF-8" />
+[005]   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+[006]   <title>Sign Up - FitClub</title>
+[007]   <link rel="stylesheet" href="styles.css" />
+[008] </head>
+[009] <body>
+[010]   <div class="section__container">
+[011]     <h1 class="section__header">Create Account</h1>
+[012]     <form id="signupForm" style="max-width:420px;margin:auto;">
+[013]       <label>Full Name</label>
+[014]       <input type="text" id="name" required />
+[015]       <label>Email</label>
+[016]       <input type="email" id="email" required />
+[017]       <label>Password</label>
+[018]       <input type="password" id="password" required />
+[019]       <button class="btn" type="submit" style="width:100%;">Sign Up</button>
+[020]     </form>
+[021]     <p style="text-align:center;margin-top:20px;color:#6b7d92;">
+[022]       Already have an account? <a href="login.html">Login</a>
+[023]     </p>
+[024]   </div>
+[025]
+[026]   <script type="module">
+[027]     import { auth, createUserWithEmailAndPassword, updateProfile } from './firebase-config.js';
+[028]
+[029]     const form = document.getElementById('signupForm');
+[030]     form.addEventListener('submit', async (e) => {
+[031]       e.preventDefault();
+[032]       const name = document.getElementById('name').value.trim();
+[033]       const email = document.getElementById('email').value.trim();
+[034]       const password = document.getElementById('password').value;
+[035]       try {
+[036]         const userCred = await createUserWithEmailAndPassword(auth, email, password);
+[037]         await updateProfile(userCred.user, { displayName: name });
+[038]         alert('Account created. Please login.');
+[039]         window.location.href = 'login.html';
+[040]       } catch (err) {
+[041]         console.error(err);
+[042]         alert(err.message || 'Error creating account');
+[043]       }
+[044]     });
+[045]   </script>
+[046] </body>
+[047] </html>
