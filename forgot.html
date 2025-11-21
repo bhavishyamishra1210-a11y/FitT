@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Forgot Password - FitClub</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="section__container">
+    <h1 class="section__header">Reset Password</h1>
+
+    <form id="forgotForm" style="max-width:420px;margin:auto;">
+      <label>Enter your account email</label>
+      <input type="email" id="email" required />
+      <button class="btn" type="submit" style="width:100%;">Send Reset Email</button>
+    </form>
+
+    <p style="text-align:center;margin-top:12px;color:#6b7d92;">
+      Remembered? <a href="login.html">Login</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { auth, sendPasswordResetEmail } from './firebase-config.js';
+
+    document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert('Password reset email sent. Check your inbox.');
+        window.location.href = 'login.html';
+      } catch (err) {
+        console.error(err);
+        alert('Error: ' + (err.message || err));
+      }
+    });
+  </script>
+</body>
+</html>
