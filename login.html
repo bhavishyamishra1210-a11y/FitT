@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Login - FitClub</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="section__container">
+    <h1 class="section__header">Login</h1>
+
+    <form id="loginForm" style="max-width:420px;margin:auto;">
+      <label>Email</label>
+      <input type="email" id="email" required />
+
+      <label>Password</label>
+      <input type="password" id="password" required />
+
+      <button class="btn" type="submit" style="width:100%;">Login</button>
+    </form>
+
+    <p style="text-align:center;margin-top:12px;color:#6b7d92;">
+      <a href="forgot.html">Forgot password?</a> • New here? <a href="signup.html">Sign up</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './firebase-config.js';
+
+    // If already logged in, go to tracker
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = 'tracker.html';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // redirect on success
+        window.location.href = 'tracker.html';
+      } catch (err) {
+        console.error(err);
+        alert('Login failed: ' + (err.message || err));
+      }
+    });
+  </script>
+</body>
+</html>
