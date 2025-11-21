@@ -1,51 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Login - FitClub</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="section__container">
-    <h1 class="section__header">Login</h1>
-
-    <form id="loginForm" style="max-width:420px;margin:auto;">
-      <label>Email</label>
-      <input type="email" id="email" required />
-
-      <label>Password</label>
-      <input type="password" id="password" required />
-
-      <button class="btn" type="submit" style="width:100%;">Login</button>
-    </form>
-
-    <p style="text-align:center;margin-top:12px;color:#6b7d92;">
-      <a href="forgot.html">Forgot password?</a> • New here? <a href="signup.html">Sign up</a>
-    </p>
-  </div>
-
-  <script type="module">
-    import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './firebase-config.js';
-
-    // If already logged in, go to tracker
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.location.href = 'tracker.html';
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // redirect on success
-        window.location.href = 'tracker.html';
-      } catch (err) {
-        console.error(err);
-        alert('Login failed: ' + (err.message || err));
-      }
-    });
-  </script>
-</body>
-</html>
+[001] <!DOCTYPE html>
+[002] <html lang="en">
+[003] <head>
+[004]   <meta charset="UTF-8" />
+[005]   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+[006]   <title>Login - FitClub</title>
+[007]   <link rel="stylesheet" href="styles.css" />
+[008] </head>
+[009] <body>
+[010]   <div class="section__container">
+[011]     <h1 class="section__header">Login</h1>
+[012]     <form id="loginForm" style="max-width:420px;margin:auto;">
+[013]       <label>Email</label>
+[014]       <input type="email" id="email" required />
+[015]       <label>Password</label>
+[016]       <input type="password" id="password" required />
+[017]       <button class="btn" type="submit" style="width:100%;">Login</button>
+[018]     </form>
+[019]     <p style="text-align:center;margin-top:12px;color:#6b7d92;">
+[020]       <a href="forgot.html">Forgot password?</a> • New here? <a href="signup.html">Sign up</a>
+[021]     </p>
+[022]   </div>
+[023]
+[024]   <script type="module">
+[025]     import { auth, signInWithEmailAndPassword, onAuthStateChanged } from './firebase-config.js';
+[026]
+[027]     onAuthStateChanged(auth, (user) => {
+[028]       if (user) window.location.href = 'tracker.html';
+[029]     });
+[030]
+[031]     document.getElementById('loginForm').addEventListener('submit', async (e) => {
+[032]       e.preventDefault();
+[033]       const email = document.getElementById('email').value.trim();
+[034]       const password = document.getElementById('password').value;
+[035]       try {
+[036]         await signInWithEmailAndPassword(auth, email, password);
+[037]         window.location.href = 'tracker.html';
+[038]       } catch (err) {
+[039]         console.error(err);
+[040]         alert('Login failed: ' + (err.message || err));
+[041]       }
+[042]     });
+[043]   </script>
+[044] </body>
+[045] </html>
