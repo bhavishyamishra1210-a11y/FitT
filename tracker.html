@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tracker - FitClub</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="section__container">
+    <h1 class="section__header">Fitness Tracker Dashboard</h1>
+
+    <h3>Welcome, <span id="userName">User</span></h3>
+
+    <div style="max-width:480px;margin:auto;">
+      <label>Workout Type</label>
+      <select id="workout-type">
+        <option value="abs">ABS</option>
+        <option value="biceps">Biceps</option>
+        <option value="back">Back</option>
+        <option value="cardio">Cardio</option>
+      </select>
+
+      <label>Duration (minutes)</label>
+      <input id="duration" type="number" min="1" value="30">
+
+      <label>Notes</label>
+      <input id="notes" type="text" placeholder="e.g. 4 sets of 12">
+
+      <div style="margin-top:1rem;">
+        <button class="btn" id="save-session">Save Session</button>
+        <button class="btn" id="load-sessions" style="background:#6b7d92;">Load My Sessions</button>
+      </div>
+    </div>
+
+    <div id="sessions-list" style="margin-top:1.5rem; max-width:700px; margin-inline:auto;"></div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn" id="logoutBtn" style="background:#f24c4c;">Logout</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, getDocs, where } from './firebase-config.js';
+
+    // Require auth
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      document.getElementById('userName').innerText = user.displayName || user.email;
+      // Optionally auto-load sessions
+      await loadSessions();
+    });
+
+    document.getElementById('save-session').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) { alert('Login required'); window.location.href='login.html'; return; }
+
+      const workoutType = document.getElementById('workout-type').value;
+      const duration = Number(document.getElementById('duration').value);
+      const notes = document.getElementById('notes').value.trim();
+      const date = new Date().toISOString();
+
+      try {
+        await addDoc(collection(db, 'sessions'), {
+          uid: user.uid,
+          workoutType,
+          duration,
+          notes,
+          date
+        });
+        alert('Session saved');
+        loadSessions();
+      } catch (err) {
+        console.error(err);
+        alert('Error saving session: ' + (err.message || err));
+      }
+    });
+
+    document.getElementById('load-sessions').addEventListener('click', loadSessions);
+
+    async function loadSessions() {
+      const user = auth.currentUser;
+      if (!user) { alert('Login required'); window.location.href='login.html'; return; }
+
+      try {
+        const q = query(collection(db, 'sessions'), where('uid', '==', user.uid), orderBy('date', 'desc'));
+        const snap = await getDocs(q);
+        const container = document.getElementById('sessions-list');
+        container.innerHTML = '';
+
+        if (snap.empty) {
+          container.innerHTML = '<p style="text-align:center;color:#6b7d92">No sessions yet.</p>';
+          return;
+        }
+
+        snap.forEach(doc => {
+          const s = doc.data();
+          const d = document.createElement('div');
+          d.style = 'padding:.6rem;border-radius:8px;border:1px solid #eee;margin-bottom:.5rem;';
+          d.innerHTML = `<strong>${s.workoutType.toUpperCase()}</strong> • ${s.duration} min • ${new Date(s.date).toLocaleString()}<div style="font-size:.9rem;color:#6b7d92">${s.notes||''}</div>`;
+          container.appendChild(d);
+        });
+      } catch (err) {
+        console.error(err);
+        alert('Could not load sessions: ' + (err.message || err));
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (err) {
+        console.error(err);
+        alert('Logout failed');
+      }
+    });
+  </script>
+</body>
+</html>
