@@ -1,122 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Tracker - FitClub</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="section__container">
-    <h1 class="section__header">Fitness Tracker Dashboard</h1>
-
-    <h3>Welcome, <span id="userName">User</span></h3>
-
-    <div style="max-width:480px;margin:auto;">
-      <label>Workout Type</label>
-      <select id="workout-type">
-        <option value="abs">ABS</option>
-        <option value="biceps">Biceps</option>
-        <option value="back">Back</option>
-        <option value="cardio">Cardio</option>
-      </select>
-
-      <label>Duration (minutes)</label>
-      <input id="duration" type="number" min="1" value="30">
-
-      <label>Notes</label>
-      <input id="notes" type="text" placeholder="e.g. 4 sets of 12">
-
-      <div style="margin-top:1rem;">
-        <button class="btn" id="save-session">Save Session</button>
-        <button class="btn" id="load-sessions" style="background:#6b7d92;">Load My Sessions</button>
-      </div>
-    </div>
-
-    <div id="sessions-list" style="margin-top:1.5rem; max-width:700px; margin-inline:auto;"></div>
-
-    <div style="text-align:center;margin-top:20px;">
-      <button class="btn" id="logoutBtn" style="background:#f24c4c;">Logout</button>
-    </div>
-  </div>
-
-  <script type="module">
-    import { auth, db, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, getDocs, where } from './firebase-config.js';
-
-    // Require auth
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-        return;
-      }
-      document.getElementById('userName').innerText = user.displayName || user.email;
-      // Optionally auto-load sessions
-      await loadSessions();
-    });
-
-    document.getElementById('save-session').addEventListener('click', async () => {
-      const user = auth.currentUser;
-      if (!user) { alert('Login required'); window.location.href='login.html'; return; }
-
-      const workoutType = document.getElementById('workout-type').value;
-      const duration = Number(document.getElementById('duration').value);
-      const notes = document.getElementById('notes').value.trim();
-      const date = new Date().toISOString();
-
-      try {
-        await addDoc(collection(db, 'sessions'), {
-          uid: user.uid,
-          workoutType,
-          duration,
-          notes,
-          date
-        });
-        alert('Session saved');
-        loadSessions();
-      } catch (err) {
-        console.error(err);
-        alert('Error saving session: ' + (err.message || err));
-      }
-    });
-
-    document.getElementById('load-sessions').addEventListener('click', loadSessions);
-
-    async function loadSessions() {
-      const user = auth.currentUser;
-      if (!user) { alert('Login required'); window.location.href='login.html'; return; }
-
-      try {
-        const q = query(collection(db, 'sessions'), where('uid', '==', user.uid), orderBy('date', 'desc'));
-        const snap = await getDocs(q);
-        const container = document.getElementById('sessions-list');
-        container.innerHTML = '';
-
-        if (snap.empty) {
-          container.innerHTML = '<p style="text-align:center;color:#6b7d92">No sessions yet.</p>';
-          return;
-        }
-
-        snap.forEach(doc => {
-          const s = doc.data();
-          const d = document.createElement('div');
-          d.style = 'padding:.6rem;border-radius:8px;border:1px solid #eee;margin-bottom:.5rem;';
-          d.innerHTML = `<strong>${s.workoutType.toUpperCase()}</strong> • ${s.duration} min • ${new Date(s.date).toLocaleString()}<div style="font-size:.9rem;color:#6b7d92">${s.notes||''}</div>`;
-          container.appendChild(d);
-        });
-      } catch (err) {
-        console.error(err);
-        alert('Could not load sessions: ' + (err.message || err));
-      }
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        window.location.href = 'login.html';
-      } catch (err) {
-        console.error(err);
-        alert('Logout failed');
-      }
-    });
-  </script>
-</body>
-</html>
+[001] <!DOCTYPE html>
+[002] <html lang="en">
+[003] <head>
+[004]   <meta charset="UTF-8" />
+[005]   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+[006]   <title>Tracker - FitClub</title>
+[007]   <link rel="stylesheet" href="styles.css" />
+[008] </head>
+[009] <body>
+[010]   <div class="section__container">
+[011]     <h1 class="section__header">Fitness Tracker Dashboard</h1>
+[012]     <h3>Welcome, <span id="userName">User</span></h3>
+[013]
+[014]     <div style="max-width:480px;margin:auto;">
+[015]       <label>Workout Type</label>
+[016]       <select id="workout-type">
+[017]         <option value="abs">ABS</option>
+[018]         <option value="biceps">Biceps</option>
+[019]         <option value="back">Back</option>
+[020]         <option value="cardio">Cardio</option>
+[021]       </select>
+[022]       <label>Duration (minutes)</label>
+[023]       <input id="duration" type="number" min="1" value="30" />
+[024]       <label>Notes</label>
+[025]       <input id="notes" type="text" placeholder="e.g. 4 sets of 12" />
+[026]       <div style="margin-top:1rem;">
+[027]         <button class="btn" id="save-session">Save Session</button>
+[028]         <button class="btn" id="load-sessions" style="background:#6b7d92;">Load My Sessions</button>
+[029]       </div>
+[030]     </div>
+[031]
+[032]     <div id="sessions-list" style="margin-top:1.5rem; max-width:700px; margin-inline:auto;"></div>
+[033]
+[034]     <div style="text-align:center;margin-top:20px;">
+[035]       <button class="btn" id="logoutBtn" style="background:#f24c4c;">Logout</button>
+[036]     </div>
+[037]   </div>
+[038]
+[039]   <script type="module">
+[040]     import { auth, db, signOut, onAuthStateChanged, collection, addDoc, query, orderBy, getDocs, where } from './firebase-config.js';
+[041]
+[042]     onAuthStateChanged(auth, async (user) => {
+[043]       if (!user) { window.location.href = 'login.html'; return; }
+[044]       document.getElementById('userName').innerText = user.displayName || user.email;
+[045]       await loadSessions();
+[046]     });
+[047]
+[048]     document.getElementById('save-session').addEventListener('click', async () => {
+[049]       const user = auth.currentUser;
+[050]       if (!user) { alert('Login required'); window.location.href='login.html'; return; }
+[051]       const workoutType = document.getElementById('workout-type').value;
+[052]       const duration = Number(document.getElementById('duration').value);
+[053]       const notes = document.getElementById('notes').value.trim();
+[054]       const date = new Date().toISOString();
+[055]       try {
+[056]         await addDoc(collection(db, 'sessions'), { uid: user.uid, workoutType, duration, notes, date });
+[057]         alert('Session saved');
+[058]         loadSessions();
+[059]       } catch (err) { console.error(err); alert('Error saving session: ' + (err.message || err)); }
+[060]     });
+[061]
+[062]     document.getElementById('load-sessions').addEventListener('click', loadSessions);
+[063]
+[064]     async function loadSessions() {
+[065]       const user = auth.currentUser;
+[066]       if (!user) { alert('Login required'); window.location.href='login.html'; return; }
+[067]       try {
+[068]         const q = query(collection(db, 'sessions'), where('uid', '==', user.uid), orderBy('date', 'desc'));
+[069]         const snap = await getDocs(q);
+[070]         const container = document.getElementById('sessions-list');
+[071]         container.innerHTML = '';
+[072]         if (snap.empty) { container.innerHTML = '<p style="text-align:center;color:#6b7d92">No sessions yet.</p>'; return; }
+[073]         snap.forEach(doc => {
+[074]           const s = doc.data();
+[075]           const d = document.createElement('div');
+[076]           d.style = 'padding:.6rem;border-radius:8px;border:1px solid #eee;margin-bottom:.5rem;';
+[077]           d.innerHTML = `<strong>${s.workoutType.toUpperCase()}</strong> • ${s.duration} min • ${new Date(s.date).toLocaleString()}<div style="font-size:.9rem;color:#6b7d92">${s.notes||''}</div>`;
+[078]           container.appendChild(d);
+[079]         });
+[080]       } catch (err) { console.error(err); alert('Could not load sessions: ' + (err.message || err)); }
+[081]     }
+[082]
+[083]     document.getElementById('logoutBtn').addEventListener('click', async () => {
+[084]       try { await signOut(auth); window.location.href = 'login.html'; } catch (err) { console.error(err); alert('Logout failed'); }
+[085]     });
+[086]   </script>
+[087] </body>
+[088] </html>
