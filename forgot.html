@@ -1,40 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Forgot Password - FitClub</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="section__container">
-    <h1 class="section__header">Reset Password</h1>
-
-    <form id="forgotForm" style="max-width:420px;margin:auto;">
-      <label>Enter your account email</label>
-      <input type="email" id="email" required />
-      <button class="btn" type="submit" style="width:100%;">Send Reset Email</button>
-    </form>
-
-    <p style="text-align:center;margin-top:12px;color:#6b7d92;">
-      Remembered? <a href="login.html">Login</a>
-    </p>
-  </div>
-
-  <script type="module">
-    import { auth, sendPasswordResetEmail } from './firebase-config.js';
-
-    document.getElementById('forgotForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert('Password reset email sent. Check your inbox.');
-        window.location.href = 'login.html';
-      } catch (err) {
-        console.error(err);
-        alert('Error: ' + (err.message || err));
-      }
-    });
-  </script>
-</body>
-</html>
+[001] <!DOCTYPE html>
+[002] <html lang="en">
+[003] <head>
+[004]   <meta charset="UTF-8" />
+[005]   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+[006]   <title>Forgot Password - FitClub</title>
+[007]   <link rel="stylesheet" href="styles.css" />
+[008] </head>
+[009] <body>
+[010]   <div class="section__container">
+[011]     <h1 class="section__header">Reset Password</h1>
+[012]     <form id="forgotForm" style="max-width:420px;margin:auto;">
+[013]       <label>Enter your account email</label>
+[014]       <input type="email" id="email" required />
+[015]       <button class="btn" type="submit" style="width:100%;">Send Reset Email</button>
+[016]     </form>
+[017]     <p style="text-align:center;margin-top:12px;color:#6b7d92;">
+[018]       Remembered? <a href="login.html">Login</a>
+[019]     </p>
+[020]   </div>
+[021]
+[022]   <script type="module">
+[023]     import { auth, sendPasswordResetEmail } from './firebase-config.js';
+[024]
+[025]     document.getElementById('forgotForm').addEventListener('submit', async (e) => {
+[026]       e.preventDefault();
+[027]       const email = document.getElementById('email').value.trim();
+[028]       try {
+[029]         await sendPasswordResetEmail(auth, email);
+[030]         alert('Password reset email sent. Check your inbox.');
+[031]         window.location.href = 'login.html';
+[032]       } catch (err) {
+[033]         console.error(err);
+[034]         alert('Error: ' + (err.message || err));
+[035]       }
+[036]     });
+[037]   </script>
+[038] </body>
+[039] </html>
